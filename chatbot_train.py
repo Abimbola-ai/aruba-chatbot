@@ -5,7 +5,8 @@ from keras.layers import Dense, Activation, Dropout
 from keras.optimizers import SGD
 import random
 import nltk
-nltk.download("punkt")
+#nltk.download('wordnet')
+#nltk.download("punkt") # uncomment if package is not already downloaded
 from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 import json
@@ -30,4 +31,9 @@ for intent in intents["intents"]:
         # add to classes
         if intent["tag"] not in classes:
             classes.append(intent["tag"])
-print(documents)
+#print(classes)
+
+#lemmatize  and lower each word and remove duplicates
+words = [lemmatizer.lemmatize(w.lower()) for w in words if w not in ignore_letters]
+words = sorted(list(set(words)))
+#print(words)
