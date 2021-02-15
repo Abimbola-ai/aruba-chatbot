@@ -2,5 +2,6 @@
     "python.pythonPath": "/Users/mac/Documents/aruba-chatbot/chat/bin/python3.8",
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
-    "python.linting.pycodestyleEnabled": true
+    "python.linting.pycodestyleEnabled": false,
+    "python.linting.mypyEnabled": true
 }
