@@ -1,39 +1,23 @@
-# import libraries
-import numpy as np
-from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
-from keras.optimizers import SGD
-import random
-import nltk
-# nltk.download('wordnet')
-#n ltk.download("punkt") # uncomment if package is not already downloaded
-from nltk.stem import WordNetLemmatizer
-lemmatizer = WordNetLemmatizer()
-import json
-import pickle
+from data_preprocess import *
 
-# create list
-words = []
-classes = []
-documents = []
-ignore_letters = ["!", "?", ".", ","] #letters to ignore
+# Create our train test
+train_x = list(train[:,0])
+train_y = list(train[:,1])
 
-intent_file = open("intents.json").read()
-intents = json.loads(intent_file)
+# Create or model
+model = Sequential()
+model.add(Dense(128, input_shape=(len(train_x[0]),), activation="relu")) # First layer with 128 neurons
+model.add(Dropout(0.5))
+model.add(Dense(64, activation="relu")) #Second layer with 64 neurons
+model.add(Dropout(0.5))
+model.add(Dense(len(train_y[0]), activation="softmax")) # Third layer with neurons == no of intents
 
-for intent in intents["intents"]:
-    for pattern in intent["patterns"]:
-        # tokenize each word
-        word  = nltk.word_tokenize(pattern)
-        words.extend(word) # stores the tokenized word in the list words
-        # add to documents
-        documents.append((word, intent["tag"]))
-        # add to classes
-        if intent["tag"] not in classes:
-            classes.append(intent["tag"])
-#print(classes)
+# Compile model. 
+sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(loss="categorical_crossentropy", optimizer=sgd, metrics=["accuracy"])
 
-#lemmatize  and lower each word and remove duplicates
-words = [lemmatizer.lemmatize(w.lower()) for w in words if w not in ignore_letters]
-words = sorted(list(set(words)))
-print(words)
+# #fitting and saving the model 
+# hist = model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
+# model.save('chatbot_model.h5', hist)
+
+# print("model created")
